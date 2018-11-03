@@ -11,7 +11,7 @@ classdef EncoderRead < realtime.internal.SourceSampleTime ...
     %
     % NOTE: When renaming the class name Source, the file name and
     % constructor name must be updated to use the class name.
-    %
+    
     
     % Copyright 2016-2018 The MathWorks, Inc.
     %#codegen
@@ -26,6 +26,8 @@ classdef EncoderRead < realtime.internal.SourceSampleTime ...
         pinA
         % Pin B
         pinB
+        % ID, either 0 or 1
+        id
     end
     
     properties (Access = private)
@@ -47,7 +49,7 @@ classdef EncoderRead < realtime.internal.SourceSampleTime ...
             else
                 % Call C-function implementing device initialization
                 coder.cinclude('encoder_arduino.h');
-                coder.ceval('encoderSetup', obj.pinA, obj.pinB);
+                coder.ceval('encoderSetup', obj.pinA, obj.pinB, obj.id);
             end
         end
         
@@ -57,7 +59,7 @@ classdef EncoderRead < realtime.internal.SourceSampleTime ...
                 % Place simulation output code here
             else
                 % Call C-function implementing device output
-                ticks = coder.ceval('readEncoder');
+                ticks = coder.ceval('readEncoder', obj.id);
             end
         end
         
